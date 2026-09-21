@@ -1,0 +1,96 @@
+{
+  "players": [
+    { "id": "alex", "name": "Alex", "initial": "A" },
+    { "id": "bea", "name": "Bea", "initial": "B" },
+    { "id": "chen", "name": "Chen", "initial": "C" },
+    { "id": "dana", "name": "Dana", "initial": "D" },
+    { "id": "eli", "name": "Eli", "initial": "E" },
+    { "id": "farah", "name": "Farah", "initial": "F" }
+  ],
+  "games": [
+    {
+      "id": "catan",
+      "name": "Catan",
+      "min": 3,
+      "max": 4,
+      "interest": { "alex": true, "bea": true, "chen": true, "dana": true, "eli": true, "farah": false }
+    },
+    {
+      "id": "ticket-to-ride",
+      "name": "Ticket to Ride",
+      "min": 2,
+      "max": 5,
+      "interest": { "alex": true, "bea": true, "chen": true, "dana": true, "eli": true, "farah": false }
+    },
+    {
+      "id": "codenames",
+      "name": "Codenames",
+      "min": 2,
+      "max": 8,
+      "interest": { "alex": false, "bea": true, "chen": true, "dana": false, "eli": true, "farah": false }
+    },
+    {
+      "id": "pandemic",
+      "name": "Pandemic",
+      "min": 2,
+      "max": 4,
+      "interest": { "alex": true, "bea": true, "chen": true, "dana": true, "eli": true, "farah": true }
+    },
+    {
+      "id": "carcassonne",
+      "name": "Carcassonne",
+      "min": 2,
+      "max": 5,
+      "interest": { "alex": true, "bea": false, "chen": false, "dana": true, "eli": false, "farah": true }
+    },
+    {
+      "id": "azul",
+      "name": "Azul",
+      "min": 2,
+      "max": 4,
+      "interest": { "alex": false, "bea": true, "chen": true, "dana": true, "eli": true, "farah": true }
+    },
+    {
+      "id": "splendor",
+      "name": "Splendor",
+      "min": 2,
+      "max": 4,
+      "interest": { "alex": true, "bea": true, "chen": true, "dana": true, "eli": false, "farah": false }
+    },
+    {
+      "id": "seven-wonders",
+      "name": "7 Wonders",
+      "min": 3,
+      "max": 7,
+      "interest": { "alex": true, "bea": true, "chen": true, "dana": false, "eli": true, "farah": false }
+    },
+    {
+      "id": "dixit",
+      "name": "Dixit",
+      "min": 3,
+      "max": 6,
+      "interest": { "alex": true, "bea": true, "chen": true, "dana": true, "eli": true, "farah": true }
+    },
+    {
+      "id": "wingspan",
+      "name": "Wingspan",
+      "min": 1,
+      "max": 5,
+      "interest": { "alex": false, "bea": false, "chen": true, "dana": true, "eli": false, "farah": false }
+    },
+    {
+      "id": "king-of-tokyo",
+      "name": "King of Tokyo",
+      "min": 2,
+      "max": 6,
+      "interest": { "alex": true, "bea": true, "chen": false, "dana": false, "eli": true, "farah": true }
+    },
+    {
+      "id": "love-letter",
+      "name": "Love Letter",
+      "min": 2,
+      "max": 4,
+      "interest": { "alex": true, "bea": false, "chen": false, "dana": false, "eli": false, "farah": true }
+    }
+  ]
+}
