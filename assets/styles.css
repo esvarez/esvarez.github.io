@@ -282,6 +282,111 @@ input, select, button {
   font-variant-numeric: tabular-nums;
 }
 
+/* ---------- Day panel ---------- */
+.day-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  margin-top: 18px;
+}
+
+.day-panel-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.day-panel-hint {
+  margin: 6px 0 16px;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  max-width: 62ch;
+}
+
+.day-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.day-tab {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 8px 18px;
+  min-height: 40px;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.day-tab[aria-selected="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+.day-body {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) 1fr;
+  gap: 28px;
+}
+
+.day-section-label {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+}
+
+.day-attendees .chip-players { margin-top: 0; }
+
+.day-matches-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.match-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  background: var(--bg);
+}
+
+.match-item.over-limit {
+  background: var(--over-tint);
+  border-color: var(--over-border);
+}
+
+.match-name {
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+
+.match-range {
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  margin-right: auto;
+}
+
+.day-empty-hint {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
 /* ---------- Table (desktop) ---------- */
 .content { padding-top: 18px; }
 
@@ -643,6 +748,12 @@ tr.over-limit .game-name-cell {
   .games-list { display: flex; }
 
   .legend { flex-direction: column; gap: 10px; }
+
+  .day-panel { padding: 16px; margin-top: 14px; }
+
+  .day-body { grid-template-columns: 1fr; gap: 18px; }
+
+  .match-range { margin-right: 0; width: 100%; order: 3; }
 }
 
 /* Hide desktop-only sort-by-header semantics visually redundant arrow on mobile table (table hidden anyway) */

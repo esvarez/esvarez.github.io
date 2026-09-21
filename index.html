@@ -68,6 +68,26 @@
   </div>
 </div>
 
+  <section class="day-panel" aria-label="Coincidencias por día">
+    <h2 class="day-panel-title">¿Qué día jugamos?</h2>
+    <p class="day-panel-hint">Elige un día, añade a quienes confirman asistencia y descubre qué juegos interesan a todos ellos.</p>
+
+    <div class="day-tabs" id="dayTabs" role="tablist" aria-label="Elegir día"></div>
+
+    <div class="day-body" role="tabpanel" id="dayTabpanel" aria-live="polite">
+      <div class="day-attendees">
+        <p class="day-section-label">Asistentes confirmados</p>
+        <div class="chip-players" id="dayAttendeeChips"></div>
+      </div>
+
+      <div class="day-matches">
+        <p class="day-section-label" id="dayMatchesLabel">Juegos que coinciden</p>
+        <ul class="day-matches-list" id="dayMatchesList"></ul>
+        <p class="day-empty-hint" id="dayEmptyHint" hidden></p>
+      </div>
+    </div>
+  </section>
+
   <main class="content">
 
     <div class="table-wrap">

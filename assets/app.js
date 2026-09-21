@@ -4,11 +4,15 @@
   var DATA_URL = "data/games.json";
   var OVERRIDES_KEY = "bgn-overrides-v1";
   var ACCENT_KEY = "bgn-accent-v1";
+  var DAY_OVERRIDES_KEY = "bgn-day-overrides-v1";
 
   var state = {
     players: [],
     games: [],
+    days: [],
     overrides: loadOverrides(),
+    dayOverrides: loadDayOverrides(),
+    activeDayId: null,
     search: "",
     filter: "all",
     sortField: "name",
@@ -31,7 +35,11 @@
     clearFiltersBtn: document.getElementById("clearFiltersBtn"),
     overStatNumber: document.getElementById("overStatNumber"),
     accentPicker: document.getElementById("accentPicker"),
-    tableWrap: document.querySelector(".table-wrap")
+    tableWrap: document.querySelector(".table-wrap"),
+    dayTabs: document.getElementById("dayTabs"),
+    dayAttendeeChips: document.getElementById("dayAttendeeChips"),
+    dayMatchesList: document.getElementById("dayMatchesList"),
+    dayEmptyHint: document.getElementById("dayEmptyHint")
   };
 
   function loadOverrides() {
@@ -46,6 +54,21 @@
   function saveOverrides() {
     try {
       localStorage.setItem(OVERRIDES_KEY, JSON.stringify(state.overrides));
+    } catch (e) { /* ignore quota / privacy-mode errors */ }
+  }
+
+  function loadDayOverrides() {
+    try {
+      var raw = localStorage.getItem(DAY_OVERRIDES_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveDayOverrides() {
+    try {
+      localStorage.setItem(DAY_OVERRIDES_KEY, JSON.stringify(state.dayOverrides));
     } catch (e) { /* ignore quota / privacy-mode errors */ }
   }
 
@@ -84,6 +107,38 @@
     state.overrides[gameId][playerId] = !current;
     saveOverrides();
     render();
+  }
+
+  function effectiveAttendee(day, playerId) {
+    var override = state.dayOverrides[day.id];
+    if (override && Object.prototype.hasOwnProperty.call(override, playerId)) {
+      return override[playerId];
+    }
+    return day.attendees.indexOf(playerId) !== -1;
+  }
+
+  function toggleAttendee(dayId, playerId) {
+    var day = state.days.find(function (d) { return d.id === dayId; });
+    if (!day) return;
+    var current = effectiveAttendee(day, playerId);
+    if (!state.dayOverrides[dayId]) state.dayOverrides[dayId] = {};
+    state.dayOverrides[dayId][playerId] = !current;
+    saveDayOverrides();
+    render();
+  }
+
+  function matchesForDay(day) {
+    var attendeeIds = state.players
+      .map(function (p) { return p.id; })
+      .filter(function (pid) { return effectiveAttendee(day, pid); });
+    if (attendeeIds.length === 0) return { attendeeIds: attendeeIds, rows: [] };
+    var rows = state.games
+      .map(computeRow)
+      .filter(function (row) {
+        return attendeeIds.every(function (pid) { return effectiveInterest(row.game, pid); });
+      })
+      .sort(function (a, b) { return a.game.name.localeCompare(b.game.name, "es"); });
+    return { attendeeIds: attendeeIds, rows: rows };
   }
 
   function computeRow(game) {
@@ -314,6 +369,7 @@
     });
 
     updateSortIndicators();
+    renderDayPanel();
   }
 
   function buildPlayerHeaders() {
@@ -331,6 +387,81 @@
     });
     var placeholderTh = els.tableHeadRow.querySelector(".players-head-cell");
     if (placeholderTh) placeholderTh.remove();
+  }
+
+  function buildDayTabs() {
+    state.days.forEach(function (day) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "day-tab";
+      btn.setAttribute("role", "tab");
+      btn.setAttribute("aria-selected", day.id === state.activeDayId ? "true" : "false");
+      btn.textContent = day.name;
+      btn.addEventListener("click", function () {
+        state.activeDayId = day.id;
+        render();
+      });
+      els.dayTabs.appendChild(btn);
+    });
+  }
+
+  function renderDayPanel() {
+    if (state.days.length === 0) return;
+    var activeDay = state.days.find(function (d) { return d.id === state.activeDayId; });
+    if (!activeDay) return;
+
+    Array.prototype.forEach.call(els.dayTabs.children, function (btn, i) {
+      btn.setAttribute("aria-selected", state.days[i].id === state.activeDayId ? "true" : "false");
+    });
+
+    els.dayAttendeeChips.innerHTML = "";
+    state.players.forEach(function (player) {
+      var pressed = effectiveAttendee(activeDay, player.id);
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "player-chip";
+      btn.setAttribute("aria-pressed", pressed ? "true" : "false");
+      btn.setAttribute(
+        "aria-label",
+        player.name + " asiste el " + activeDay.name
+      );
+      btn.innerHTML =
+        '<span class="avatar" aria-hidden="true">' + player.initial + "</span>" +
+        "<span>" + player.name + "</span>";
+      btn.addEventListener("click", function () {
+        toggleAttendee(activeDay.id, player.id);
+      });
+      els.dayAttendeeChips.appendChild(btn);
+    });
+
+    var match = matchesForDay(activeDay);
+    els.dayMatchesList.innerHTML = "";
+
+    if (match.attendeeIds.length === 0) {
+      els.dayMatchesList.hidden = true;
+      els.dayEmptyHint.hidden = false;
+      els.dayEmptyHint.textContent = "Añade jugadores a " + activeDay.name + " para ver qué juegos coinciden.";
+      return;
+    }
+
+    if (match.rows.length === 0) {
+      els.dayMatchesList.hidden = true;
+      els.dayEmptyHint.hidden = false;
+      els.dayEmptyHint.textContent = "Ningún juego interesa a todos los asistentes de " + activeDay.name + " todavía.";
+      return;
+    }
+
+    els.dayMatchesList.hidden = false;
+    els.dayEmptyHint.hidden = true;
+    match.rows.forEach(function (row) {
+      var li = document.createElement("li");
+      li.className = "match-item" + (row.over ? " over-limit" : "");
+      li.innerHTML =
+        '<span class="match-name">' + escapeHtml(row.game.name) + "</span>" +
+        '<span class="match-range">' + row.game.min + "–" + row.game.max + " jugadores</span>" +
+        countBadgeHtml(row);
+      els.dayMatchesList.appendChild(li);
+    });
   }
 
   function bindEvents() {
@@ -394,7 +525,10 @@
       .then(function (data) {
         state.players = data.players;
         state.games = data.games;
+        state.days = data.days || [];
+        state.activeDayId = state.days.length ? state.days[0].id : null;
         buildPlayerHeaders();
+        buildDayTabs();
         bindEvents();
         render();
       })

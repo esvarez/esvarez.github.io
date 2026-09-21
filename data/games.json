@@ -7,6 +7,11 @@
     { "id": "eli", "name": "Eli", "initial": "E" },
     { "id": "farah", "name": "Farah", "initial": "F" }
   ],
+  "days": [
+    { "id": "friday", "name": "Viernes", "attendees": ["alex", "bea", "chen"] },
+    { "id": "saturday", "name": "Sábado", "attendees": ["bea", "dana", "eli", "farah"] },
+    { "id": "sunday", "name": "Domingo", "attendees": [] }
+  ],
   "games": [
     {
       "id": "catan",
