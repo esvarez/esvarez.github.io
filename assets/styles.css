@@ -159,8 +159,8 @@ input, select, button {
   flex-wrap: wrap;
 }
 
-.toolbar-row + .toolbar-row {
-  margin-top: 12px;
+.toolbar .showing-count {
+  margin-top: 10px;
 }
 
 .search-field {
@@ -210,49 +210,6 @@ input, select, button {
 }
 
 .dir-btn[data-dir="desc"] .dir-icon { transform: rotate(180deg); }
-
-.filters-row {
-  justify-content: space-between;
-}
-
-.filter-chips {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--ink);
-  border-radius: var(--radius-pill);
-  padding: 4px 10px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  min-height: 30px;
-}
-
-.chip .chip-count {
-  background: var(--border-soft);
-  border-radius: var(--radius-pill);
-  padding: 1px 8px;
-  font-size: 0.78rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.chip[aria-pressed="true"] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--surface);
-}
-
-.chip[aria-pressed="true"] .chip-count {
-  background: rgba(255, 253, 248, 0.18);
-  color: var(--surface);
-}
 
 .showing-count {
   margin: 0;
@@ -613,10 +570,6 @@ input, select, button {
 .toggle-btn[aria-pressed="true"] .check { display: block; }
 .toggle-btn .check { display: none; }
 
-.interested-cell {
-  white-space: nowrap;
-}
-
 .count-row {
   display: flex;
   align-items: center;
@@ -642,16 +595,6 @@ input, select, button {
   white-space: nowrap;
 }
 
-tr.over-limit {
-  background: var(--over-tint);
-}
-
-tr.over-limit td { border-bottom-color: var(--over-border); }
-
-tr.over-limit .game-name-cell {
-  box-shadow: inset 3px 0 0 var(--over-badge);
-}
-
 /* ---------- Mobile card list ---------- */
 .games-list {
   list-style: none;
@@ -667,11 +610,6 @@ tr.over-limit .game-name-cell {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 12px;
-}
-
-.game-card.over-limit {
-  background: var(--over-tint);
-  border-color: var(--over-border);
 }
 
 .card-top {
@@ -695,14 +633,6 @@ tr.over-limit .game-name-cell {
   color: var(--ink-soft);
   font-size: 0.86rem;
   font-variant-numeric: tabular-nums;
-}
-
-.card-count {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  flex-shrink: 0;
 }
 
 .chip-players {
@@ -799,15 +729,6 @@ tr.over-limit .game-name-cell {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-}
-
-.legend-swatch {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
-  background: var(--over-tint);
-  border: 1px solid var(--over-badge);
-  flex-shrink: 0;
 }
 
 /* ==========================================================

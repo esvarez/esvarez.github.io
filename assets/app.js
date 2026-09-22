@@ -14,7 +14,6 @@
     pendingAttendance: {},
     activeDayId: null,
     search: "",
-    filter: "all",
     sortField: "name",
     sortDir: "asc",
     playerSearch: "",
@@ -24,10 +23,6 @@
 
   var els = {
     searchInput: document.getElementById("searchInput"),
-    chips: Array.prototype.slice.call(document.querySelectorAll(".chip")),
-    countAll: document.getElementById("countAll"),
-    countOver: document.getElementById("countOver"),
-    countWithin: document.getElementById("countWithin"),
     showingCount: document.getElementById("showingCount"),
     sortField: document.getElementById("sortField"),
     sortDirBtn: document.getElementById("sortDirBtn"),
@@ -181,10 +176,20 @@
       .map(function (p) { return p.id; })
       .filter(function (pid) { return effectiveAttendee(day, pid); });
     if (attendeeIds.length === 0) return { attendeeIds: attendeeIds, rows: [] };
+    var attendeeCount = attendeeIds.length;
     var rows = state.games
-      .map(computeRow)
-      .filter(function (row) {
-        return attendeeIds.every(function (pid) { return effectiveInterest(row.game, pid); });
+      .filter(function (game) {
+        return attendeeIds.every(function (pid) { return effectiveInterest(game, pid); });
+      })
+      .map(function (game) {
+        var over = attendeeCount > game.max;
+        return {
+          game: game,
+          interestedIds: attendeeIds,
+          count: attendeeCount,
+          over: over,
+          overBy: over ? attendeeCount - game.max : 0
+        };
       })
       .sort(function (a, b) { return a.game.name.localeCompare(b.game.name, "es"); });
     return { attendeeIds: attendeeIds, rows: rows };
@@ -221,12 +226,6 @@
       });
   }
 
-  function applyFilter(rows) {
-    if (state.filter === "over") return rows.filter(function (r) { return r.over; });
-    if (state.filter === "within") return rows.filter(function (r) { return !r.over; });
-    return rows;
-  }
-
   function applySort(rows) {
     var field = state.sortField;
     var dir = state.sortDir === "desc" ? -1 : 1;
@@ -237,13 +236,8 @@
         bv = b.game.name;
         return av.localeCompare(bv, "es") * dir;
       }
-      if (field === "limit") {
-        av = a.game.max;
-        bv = b.game.max;
-      } else {
-        av = a.count;
-        bv = b.count;
-      }
+      av = a.game.max;
+      bv = b.game.max;
       if (av === bv) return a.game.name.localeCompare(b.game.name, "es");
       return (av - bv) * dir;
     });
@@ -267,10 +261,10 @@
       "</g></svg>";
   }
 
-  function countBadgeHtml(row) {
+  function countBadgeHtml(row, showWarning) {
     var html = '<span class="count-row">' +
       '<span class="count-fraction">' + row.count + " / " + row.game.max + "</span>";
-    if (row.over) {
+    if (showWarning && row.over) {
       html += '<span class="over-badge">' + warningIconSvg() + " Supera por " + row.overBy + "</span>";
     }
     html += "</span>";
@@ -279,7 +273,6 @@
 
   function renderDesktopRow(row) {
     var tr = document.createElement("tr");
-    tr.className = row.over ? "over-limit" : "";
 
     var nameTd = document.createElement("td");
     nameTd.className = "game-name-cell";
@@ -310,17 +303,12 @@
       tr.appendChild(td);
     });
 
-    var countTd = document.createElement("td");
-    countTd.className = "interested-cell";
-    countTd.innerHTML = countBadgeHtml(row);
-    tr.appendChild(countTd);
-
     return tr;
   }
 
   function renderMobileCard(row) {
     var li = document.createElement("li");
-    li.className = "game-card" + (row.over ? " over-limit" : "");
+    li.className = "game-card";
 
     var top = document.createElement("div");
     top.className = "card-top";
@@ -328,8 +316,7 @@
       '<div class="card-title-group">' +
         '<p class="card-title">' + escapeHtml(row.game.name) + "</p>" +
         '<p class="card-range">' + row.game.min + "–" + row.game.max + " jugadores</p>" +
-      "</div>" +
-      '<div class="card-count">' + countBadgeHtml(row) + "</div>";
+      "</div>";
     li.appendChild(top);
 
     var chips = document.createElement("div");
@@ -385,12 +372,7 @@
   }
 
   function render() {
-    var searchMatched = getSearchMatched();
-    els.countAll.textContent = String(searchMatched.length);
-    els.countOver.textContent = String(searchMatched.filter(function (r) { return r.over; }).length);
-    els.countWithin.textContent = String(searchMatched.filter(function (r) { return !r.over; }).length);
-
-    var visible = applySort(applyFilter(searchMatched));
+    var visible = applySort(getSearchMatched());
 
     els.showingCount.textContent = "Mostrando " + visible.length + " de " + state.games.length;
 
@@ -407,16 +389,11 @@
       });
     }
 
-    els.chips.forEach(function (chip) {
-      chip.setAttribute("aria-pressed", chip.getAttribute("data-filter") === state.filter ? "true" : "false");
-    });
-
     updateSortIndicators();
     renderDayPanel();
   }
 
   function buildPlayerHeaders() {
-    var countTh = els.tableHeadRow.querySelector('[data-sort="interested"]').closest("th");
     state.players.forEach(function (player) {
       var th = document.createElement("th");
       th.scope = "col";
@@ -426,7 +403,7 @@
           '<span class="avatar" aria-hidden="true">' + player.initial + "</span>" +
           '<span class="player-head-name">' + player.name + "</span>" +
         "</span>";
-      els.tableHeadRow.insertBefore(th, countTh);
+      els.tableHeadRow.appendChild(th);
     });
     var placeholderTh = els.tableHeadRow.querySelector(".players-head-cell");
     if (placeholderTh) placeholderTh.remove();
@@ -571,7 +548,7 @@
       li.innerHTML =
         '<span class="match-name">' + escapeHtml(row.game.name) + "</span>" +
         '<span class="match-range">' + row.game.min + "–" + row.game.max + " jugadores</span>" +
-        countBadgeHtml(row);
+        countBadgeHtml(row, true);
       els.dayMatchesList.appendChild(li);
     });
   }
@@ -580,13 +557,6 @@
     els.searchInput.addEventListener("input", function (e) {
       state.search = e.target.value;
       render();
-    });
-
-    els.chips.forEach(function (chip) {
-      chip.addEventListener("click", function () {
-        state.filter = chip.getAttribute("data-filter");
-        render();
-      });
     });
 
     Array.prototype.forEach.call(document.querySelectorAll(".sort-th"), function (btn) {
@@ -614,7 +584,6 @@
 
     els.clearFiltersBtn.addEventListener("click", function () {
       state.search = "";
-      state.filter = "all";
       els.searchInput.value = "";
       render();
     });
