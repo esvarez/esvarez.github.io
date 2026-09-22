@@ -20,9 +20,9 @@
   --font-heading: "Fraunces", Georgia, serif;
   --font-body: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-  --radius-lg: 18px;
-  --radius-md: 12px;
-  --radius-sm: 8px;
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --radius-sm: 6px;
   --radius-pill: 999px;
 }
 
@@ -77,94 +77,97 @@ input, select, button {
 .app-shell {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 0 24px 48px;
+  padding: 0 24px 40px;
 }
 
 .fixed-zone {
   background: var(--bg);
-  padding-top: 32px;
+  padding-top: 24px;
 }
 
 /* ---------- Header ---------- */
 .app-header {
-  padding-bottom: 20px;
+  padding-bottom: 14px;
 }
 
 .header-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
+  gap: 20px;
   flex-wrap: wrap;
 }
 
 .header-text h1 {
-  font-size: 2.1rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 1.7rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
 }
 
 .subtitle {
-  margin: 8px 0 0;
+  margin: 6px 0 0;
   max-width: 56ch;
   color: var(--ink-soft);
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .stat-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 14px 22px;
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 168px;
+  min-width: 132px;
   text-align: center;
 }
 
 .stat-number {
   font-family: var(--font-heading);
-  font-size: 2.6rem;
-  font-weight: 700;
+  font-size: 1.7rem;
+  font-weight: 500;
   color: var(--over-badge);
   line-height: 1;
 }
 
 .stat-label {
-  margin-top: 4px;
-  font-size: 0.82rem;
+  margin-top: 2px;
+  font-size: 0.75rem;
   color: var(--ink-soft);
-  font-weight: 500;
+  font-weight: 400;
 }
 
 /* ---------- View tabs ---------- */
 .view-tabs {
   display: flex;
   width: 100%;
-  gap: 8px;
-  padding: 14px 0 16px;
+  gap: 4px;
+  padding: 0;
   border-top: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .view-tab {
-  flex: 1 1 0;
+  flex: 0 1 auto;
   min-width: 0;
   text-align: center;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--ink);
-  border-radius: var(--radius-pill);
-  padding: 10px 16px;
-  min-height: 44px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--ink-soft);
+  border-radius: 0;
+  padding: 9px 14px 7px;
+  min-height: 0;
+  font-weight: 500;
+  font-size: 0.88rem;
 }
 
 .view-tab[aria-selected="true"] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--surface);
+  background: none;
+  border-color: transparent;
+  border-bottom-color: var(--ink);
+  color: var(--ink);
 }
 
 .view-panel[hidden] {
@@ -193,10 +196,10 @@ input, select, button {
   gap: 8px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  padding: 10px 16px;
-  flex: 1 1 260px;
-  max-width: 360px;
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  flex: 1 1 240px;
+  max-width: 320px;
   color: var(--ink-soft);
 }
 
@@ -217,16 +220,16 @@ input, select, button {
   background: var(--surface);
   color: var(--ink);
   border-radius: var(--radius-md);
-  padding: 10px 12px;
-  min-height: 44px;
+  padding: 6px 10px;
+  min-height: 34px;
 }
 
 .dir-btn {
   display: flex;
   align-items: center;
   gap: 6px;
-  min-height: 44px;
-  padding: 0 14px;
+  min-height: 34px;
+  padding: 0 10px;
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--ink);
@@ -253,10 +256,10 @@ input, select, button {
   background: var(--surface);
   color: var(--ink);
   border-radius: var(--radius-pill);
-  padding: 8px 14px;
-  font-size: 0.88rem;
+  padding: 4px 10px;
+  font-size: 0.8rem;
   font-weight: 500;
-  min-height: 40px;
+  min-height: 30px;
 }
 
 .chip .chip-count {
@@ -289,20 +292,20 @@ input, select, button {
 .day-panel {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px 22px;
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
   margin-top: 4px;
 }
 
 .day-panel-title {
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 500;
 }
 
 .day-panel-hint {
-  margin: 6px 0 16px;
+  margin: 4px 0 14px;
   color: var(--ink-soft);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   max-width: 62ch;
 }
 
@@ -314,13 +317,13 @@ input, select, button {
 
 .day-tab {
   border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--ink);
+  background: none;
+  color: var(--ink-soft);
   border-radius: var(--radius-pill);
-  padding: 8px 18px;
-  min-height: 40px;
-  font-weight: 600;
-  font-size: 0.92rem;
+  padding: 4px 12px;
+  min-height: 30px;
+  font-weight: 500;
+  font-size: 0.82rem;
 }
 
 .day-tab[aria-selected="true"] {
@@ -330,28 +333,30 @@ input, select, button {
 }
 
 .day-place {
-  margin-top: 18px;
+  margin-top: 14px;
 }
 
 .day-place-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: var(--bg);
+  gap: 8px;
+  background: none;
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-md);
-  padding: 12px 14px;
+  padding: 8px 12px;
 }
 
 .day-place-icon {
-  color: var(--accent-color);
+  color: var(--ink-soft);
+  width: 16px;
+  height: 16px;
 }
 
 .day-place-name {
   margin: 0;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 1.05rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.92rem;
 }
 
 .day-body {
@@ -362,11 +367,11 @@ input, select, button {
 }
 
 .day-section-label {
-  margin: 0 0 10px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  margin: 0 0 8px;
+  font-size: 0.72rem;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   color: var(--ink-soft);
 }
 
@@ -378,6 +383,26 @@ input, select, button {
 .player-search-field {
   max-width: none;
   width: 100%;
+  padding: 5px 10px;
+  gap: 6px;
+  color: var(--ink-soft);
+}
+
+.player-search-field .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.player-search-field input {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.player-search-field input::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.75;
+  font-weight: 400;
 }
 
 .player-search-results {
@@ -400,17 +425,17 @@ input, select, button {
 .player-search-option {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
   border: none;
   background: none;
   color: var(--ink);
   border-radius: var(--radius-sm);
-  padding: 8px 10px;
-  min-height: 44px;
+  padding: 6px 8px;
+  min-height: 34px;
   text-align: left;
-  font-size: 0.92rem;
-  font-weight: 500;
+  font-size: 0.86rem;
+  font-weight: 400;
 }
 
 .player-search-option:hover,
@@ -440,11 +465,11 @@ input, select, button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
   border: 1px solid var(--border-soft);
-  border-radius: var(--radius-md);
-  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
   background: var(--bg);
 }
 
@@ -454,8 +479,9 @@ input, select, button {
 }
 
 .match-name {
-  font-family: var(--font-heading);
-  font-weight: 600;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .match-range {
@@ -471,12 +497,12 @@ input, select, button {
 }
 
 /* ---------- Table (desktop) ---------- */
-.content { padding-top: 18px; }
+.content { padding-top: 12px; }
 
 .table-wrap {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
@@ -488,10 +514,10 @@ input, select, button {
 
 .games-table thead th {
   text-align: left;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink-soft);
   border-bottom: 1px solid var(--border);
-  padding: 10px 10px;
+  padding: 7px 8px;
   background: var(--surface);
 }
 
@@ -510,8 +536,8 @@ input, select, button {
   border: none;
   color: inherit;
   font: inherit;
-  font-weight: 600;
-  padding: 4px 2px;
+  font-weight: 500;
+  padding: 2px 1px;
   border-radius: var(--radius-sm);
 }
 
@@ -527,7 +553,7 @@ input, select, button {
 .sort-arrow[data-active="desc"]::after { content: "▼"; }
 
 .games-table td {
-  padding: 10px;
+  padding: 7px 8px;
   border-bottom: 1px solid var(--border-soft);
   vertical-align: middle;
 }
@@ -535,9 +561,9 @@ input, select, button {
 .games-table tbody tr:last-child td { border-bottom: none; }
 
 .game-name-cell .game-name {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 1.02rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.92rem;
 }
 
 .range-pill {
@@ -561,16 +587,16 @@ input, select, button {
 }
 
 .avatar {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--ink);
   color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: 0.68rem;
+  font-weight: 500;
   flex-shrink: 0;
 }
 
@@ -586,10 +612,10 @@ input, select, button {
 }
 
 .toggle-btn {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 1.6px solid var(--border);
+  border: 1px solid var(--border);
   background: var(--surface);
   display: inline-flex;
   align-items: center;
@@ -627,19 +653,19 @@ input, select, button {
 
 .count-fraction {
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .over-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   background: var(--over-badge);
   color: #FFF6EE;
   border-radius: var(--radius-pill);
-  padding: 3px 10px 3px 8px;
-  font-size: 0.76rem;
-  font-weight: 600;
+  padding: 2px 8px 2px 6px;
+  font-size: 0.7rem;
+  font-weight: 500;
   white-space: nowrap;
 }
 
@@ -666,8 +692,8 @@ tr.over-limit .game-name-cell {
 .game-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 16px;
+  border-radius: var(--radius-md);
+  padding: 12px;
 }
 
 .game-card.over-limit {
@@ -685,9 +711,9 @@ tr.over-limit .game-name-cell {
 .card-title-group { min-width: 0; }
 
 .card-title {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 1.15rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 1rem;
   margin: 0;
 }
 
@@ -716,20 +742,20 @@ tr.over-limit .game-name-cell {
 .player-chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  border: 1.6px solid var(--border);
+  gap: 6px;
+  border: 1px solid var(--border);
   background: var(--surface);
   border-radius: var(--radius-pill);
-  padding: 6px 14px 6px 6px;
-  min-height: 44px;
+  padding: 3px 10px 3px 4px;
+  min-height: 30px;
   color: var(--ink);
-  font-size: 0.88rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 400;
 }
 
 .player-chip .avatar {
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
   background: var(--border-soft);
   color: var(--ink);
 }
@@ -774,14 +800,14 @@ tr.over-limit .game-name-cell {
 }
 
 .clear-btn {
-  margin-top: 14px;
+  margin-top: 12px;
   background: var(--ink);
   color: var(--surface);
   border: none;
   border-radius: var(--radius-pill);
-  padding: 10px 20px;
-  font-weight: 600;
-  min-height: 44px;
+  padding: 6px 14px;
+  font-weight: 500;
+  min-height: 32px;
 }
 
 /* ---------- Legend ---------- */
@@ -803,11 +829,11 @@ tr.over-limit .game-name-cell {
 }
 
 .legend-swatch {
-  width: 18px;
-  height: 18px;
-  border-radius: 5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
   background: var(--over-tint);
-  border: 1.6px solid var(--over-badge);
+  border: 1px solid var(--over-badge);
   flex-shrink: 0;
 }
 
@@ -832,17 +858,17 @@ tr.over-limit .game-name-cell {
 
   .header-row { gap: 14px; }
 
-  .header-text h1 { font-size: 1.5rem; }
+  .header-text h1 { font-size: 1.35rem; }
 
-  .subtitle { font-size: 0.88rem; }
+  .subtitle { font-size: 0.82rem; }
 
-  .stat-card { min-width: 0; padding: 10px 16px; }
+  .stat-card { min-width: 0; padding: 6px 12px; }
 
-  .stat-number { font-size: 1.9rem; }
+  .stat-number { font-size: 1.4rem; }
 
   .view-tab {
-    font-size: 0.86rem;
-    padding: 10px 8px;
+    font-size: 0.82rem;
+    padding: 8px 10px 6px;
   }
 
   .search-field { max-width: none; flex: 1 1 auto; }

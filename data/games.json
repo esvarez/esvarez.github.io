@@ -1,24 +1,28 @@
 {
   "players": [
-    { "id": "alex", "name": "Alex", "initial": "A" },
-    { "id": "bea", "name": "Bea", "initial": "B" },
-    { "id": "chen", "name": "Chen", "initial": "C" },
-    { "id": "dana", "name": "Dana", "initial": "D" },
-    { "id": "eli", "name": "Eli", "initial": "E" },
-    { "id": "farah", "name": "Farah", "initial": "F" }
+    { "id": "ivan", "name": "Ivan", "initial": "I" },
+    { "id": "rafa", "name": "Rafa", "initial": "R" },
+    { "id": "ciclali", "name": "Ciclali", "initial": "C" },
+    { "id": "morroxd", "name": "MorroXD", "initial": "M" },
+    { "id": "ashley", "name": "Ashley", "initial": "A" },
+    { "id": "benja", "name": "Benja", "initial": "B" },
+    { "name": "Dany", "initial": "D" , "id": "dany"},
+    { "name": "Lau", "initial": "L" , "id": "lau"},
+    { "name": "Pachi", "initial": "P" , "id": "pachi"},
+    { "name": "Erick", "initial": "E" , "id": "erick"}
   ],
   "days": [
-    { "id": "thursday", "name": "Jueves", "place": "Casa de Alex", "attendees": [] },
-    { "id": "friday", "name": "Viernes", "place": "Casa de Bea", "attendees": ["alex", "bea", "chen"] },
-    { "id": "saturday", "name": "Sábado", "place": "Café de los Dados", "attendees": ["bea", "dana", "eli", "farah"] }
+    { "id": "thursday", "name": "Jueves", "place": "Casa de Erick?", "attendees": [] },
+    { "id": "friday", "name": "Viernes", "place": "Casa de Ivan?", "attendees": ["erick"] },
+    { "id": "saturday", "name": "Sábado", "place": "???", "attendees": ["erick"] }
   ],
   "games": [
     {
-      "id": "catan",
-      "name": "Catan",
-      "min": 3,
+      "name": "Merchants Cove",
+      "id": "merchants-cove",
+      "min": 1,
       "max": 4,
-      "interest": { "alex": true, "bea": true, "chen": true, "dana": true, "eli": true, "farah": false }
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
     },
     {
       "id": "ticket-to-ride",
