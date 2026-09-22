@@ -12,9 +12,9 @@
     { "name": "Erick", "initial": "E" , "id": "erick"}
   ],
   "days": [
-    { "id": "thursday", "name": "Jueves", "place": "Casa de Erick?", "attendees": [] },
+    { "id": "thursday", "name": "Jueves", "place": "Casa de Erick?", "attendees": ["erick"] },
     { "id": "friday", "name": "Viernes", "place": "Casa de Ivan?", "attendees": ["erick"] },
-    { "id": "saturday", "name": "Sábado", "place": "???", "attendees": ["erick"] }
+    { "id": "saturday", "name": "Sábado", "place": "TBD", "attendees": ["erick"] }
   ],
   "games": [
     {
@@ -25,81 +25,117 @@
       "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
     },
     {
-      "id": "ticket-to-ride",
-      "name": "Ticket to Ride",
-      "min": 2,
+      "id": "scythe",
+      "name": "Scythe",
+      "min": 1,
       "max": 5,
-      "interest": { "alex": true, "bea": true, "chen": true, "dana": true, "eli": true, "farah": false }
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
     },
     {
       "id": "codenames",
-      "name": "Codenames",
-      "min": 2,
-      "max": 8,
-      "interest": { "alex": false, "bea": true, "chen": true, "dana": false, "eli": true, "farah": false }
-    },
-    {
-      "id": "pandemic",
-      "name": "Pandemic",
+      "name": "Weather Machine",
       "min": 2,
       "max": 4,
-      "interest": { "alex": true, "bea": true, "chen": true, "dana": true, "eli": true, "farah": true }
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
     },
     {
-      "id": "carcassonne",
-      "name": "Carcassonne",
+      "id": "everdell",
+      "name": "Everdell",
+      "min": 1,
+      "max": 6,
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
+    },
+    {
+      "id": "trickerion",
+      "name": "Trickerion",
+      "min": 2,
+      "max": 4,
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
+    },
+    {
+      "id": "cubitos",
+      "name": "Cubitos",
+      "min": 2,
+      "max": 4,
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
+    },
+    {
+      "id": "la-corona-del-viejo-rey",
+      "name": "La corona del viejo rey",
+      "min": 2,
+      "max": 4,
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
+    },
+    {
+      "id": "alchemists",
+      "name": "Alchemists",
+      "min": 2,
+      "max": 4,
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
+    },
+    {
+      "id": "dead-of-winter",
+      "name": "Dead of Winter",
       "min": 2,
       "max": 5,
-      "interest": { "alex": true, "bea": false, "chen": false, "dana": true, "eli": false, "farah": true }
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
     },
     {
-      "id": "azul",
-      "name": "Azul",
-      "min": 2,
-      "max": 4,
-      "interest": { "alex": false, "bea": true, "chen": true, "dana": true, "eli": true, "farah": true }
-    },
-    {
-      "id": "splendor",
-      "name": "Splendor",
-      "min": 2,
-      "max": 4,
-      "interest": { "alex": true, "bea": true, "chen": true, "dana": true, "eli": false, "farah": false }
-    },
-    {
-      "id": "seven-wonders",
-      "name": "7 Wonders",
-      "min": 3,
-      "max": 7,
-      "interest": { "alex": true, "bea": true, "chen": true, "dana": false, "eli": true, "farah": false }
-    },
-    {
-      "id": "dixit",
-      "name": "Dixit",
-      "min": 3,
-      "max": 6,
-      "interest": { "alex": true, "bea": true, "chen": true, "dana": true, "eli": true, "farah": true }
-    },
-    {
-      "id": "wingspan",
-      "name": "Wingspan",
+      "id": "tapestry",
+      "name": "Tapestry",
       "min": 1,
       "max": 5,
-      "interest": { "alex": false, "bea": false, "chen": true, "dana": true, "eli": false, "farah": false }
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
     },
     {
-      "id": "king-of-tokyo",
-      "name": "King of Tokyo",
-      "min": 2,
-      "max": 6,
-      "interest": { "alex": true, "bea": true, "chen": false, "dana": false, "eli": true, "farah": true }
+      "id": "food-chain-magnate",
+      "name": "Food Chain Magnate ",
+      "min": 1,
+      "max": 5,
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
     },
     {
-      "id": "love-letter",
-      "name": "Love Letter",
-      "min": 2,
+      "id": "endless-winter",
+      "name": "Endless Winter",
+      "min": 1,
       "max": 4,
       "interest": { "alex": true, "bea": false, "chen": false, "dana": false, "eli": false, "farah": true }
+    },
+    {
+      "id": "barrage",
+      "name": "Barrage",
+      "min": 1,
+      "max": 4,
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
+    },
+    {
+      "name": "En busqueda del planeta X",
+      "id": "en-busqueda-del-planeta-x",
+      "min": 1,
+      "max": 4,
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
+    },
+    {
+      "name": "The Lord of the Rings: Fate of the Fellowship",
+      "id": "the-lord-of-the-rings-fate-of-the-fellowship",
+      "min": 1,
+      "max": 5,
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
+    },
+    {
+      "name": "Root",
+      "id": "root",
+      "min": 1,
+      "max": 4,
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
+    },
+    {
+      "name": "Turing Machine",
+      "id": "turing-machine",
+      "min": 1,
+      "max": 4,
+      "interest": { "ivan": true, "rafa": true, "ciclali": true, "morroxd": true, "ashley": true, "benja": true, "dany": true, "lau": true, "pachi": true, "erick": true }
     }
+
   ]
 }
