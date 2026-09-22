@@ -26,7 +26,7 @@ func TestAssembleSnapshot(t *testing.T) {
 		item("PK", s("GAME#catan"), "SK", s("INTEREST#alex"), "Interested", b(true)),
 		item("PK", s("GAME#catan"), "SK", s("INTEREST#bea"), "Interested", b(false)),
 
-		item("PK", s("DAY#friday"), "SK", s("PROFILE"), "Name", s("Viernes")),
+		item("PK", s("DAY#friday"), "SK", s("PROFILE"), "Name", s("Viernes"), "Place", s("Casa de Bea")),
 		item("PK", s("DAY#friday"), "SK", s("ATTENDEE#bea"), "Attending", b(true)),
 		item("PK", s("DAY#friday"), "SK", s("ATTENDEE#alex"), "Attending", b(false)),
 	}
@@ -55,7 +55,7 @@ func TestAssembleSnapshot(t *testing.T) {
 		t.Fatalf("expected 1 day, got %d", len(got.Days))
 	}
 	day := got.Days[0]
-	if day.ID != "friday" || day.Name != "Viernes" {
+	if day.ID != "friday" || day.Name != "Viernes" || day.Place != "Casa de Bea" {
 		t.Fatalf("unexpected day metadata: %+v", day)
 	}
 	// Only bea has Attending=true; alex's ATTENDEE item is explicitly false

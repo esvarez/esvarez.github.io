@@ -94,6 +94,7 @@ func assembleSnapshot(items []map[string]types.AttributeValue) Snapshot {
 		case strings.HasPrefix(pk, dayPrefix) && sk == skProfile:
 			d := dayFor(dayByID, strings.TrimPrefix(pk, dayPrefix))
 			d.Name = stringAttr(item, "Name")
+			d.Place = stringAttr(item, "Place")
 
 		case strings.HasPrefix(pk, dayPrefix) && strings.HasPrefix(sk, attendeePrefix):
 			d := dayFor(dayByID, strings.TrimPrefix(pk, dayPrefix))
@@ -212,9 +213,10 @@ func (s *Store) PutDay(ctx context.Context, d Day) error {
 	_, err := s.client.PutItem(ctx, &dynamodb.PutItemInput{
 		TableName: aws.String(s.table),
 		Item: map[string]types.AttributeValue{
-			"PK":   &types.AttributeValueMemberS{Value: dayPrefix + d.ID},
-			"SK":   &types.AttributeValueMemberS{Value: skProfile},
-			"Name": &types.AttributeValueMemberS{Value: d.Name},
+			"PK":      &types.AttributeValueMemberS{Value: dayPrefix + d.ID},
+			"SK":      &types.AttributeValueMemberS{Value: skProfile},
+			"Name":  &types.AttributeValueMemberS{Value: d.Name},
+			"Place": &types.AttributeValueMemberS{Value: d.Place},
 		},
 	})
 	if err != nil {

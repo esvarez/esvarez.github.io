@@ -21,6 +21,7 @@ type Game struct {
 type Day struct {
 	ID        string   `json:"id"`
 	Name      string   `json:"name"`
+	Place     string   `json:"place,omitempty"`
 	Attendees []string `json:"attendees"`
 }
 
