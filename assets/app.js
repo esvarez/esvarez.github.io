@@ -15,7 +15,10 @@
     search: "",
     filter: "all",
     sortField: "name",
-    sortDir: "asc"
+    sortDir: "asc",
+    playerSearch: "",
+    playerSearchOpen: false,
+    playerSearchActiveIndex: -1
   };
 
   var els = {
@@ -35,9 +38,18 @@
     overStatNumber: document.getElementById("overStatNumber"),
     tableWrap: document.querySelector(".table-wrap"),
     dayTabs: document.getElementById("dayTabs"),
+    dayPlaceName: document.getElementById("dayPlaceName"),
+    playerSearch: document.getElementById("playerSearch"),
+    playerSearchInput: document.getElementById("playerSearchInput"),
+    playerSearchResults: document.getElementById("playerSearchResults"),
     dayAttendeeChips: document.getElementById("dayAttendeeChips"),
+    dayAttendeeEmpty: document.getElementById("dayAttendeeEmpty"),
     dayMatchesList: document.getElementById("dayMatchesList"),
-    dayEmptyHint: document.getElementById("dayEmptyHint")
+    dayEmptyHint: document.getElementById("dayEmptyHint"),
+    tabGames: document.getElementById("tabGames"),
+    tabAttendance: document.getElementById("tabAttendance"),
+    panelGames: document.getElementById("panelGames"),
+    panelAttendance: document.getElementById("panelAttendance")
   };
 
   function loadOverrides() {
@@ -96,14 +108,45 @@
     return day.attendees.indexOf(playerId) !== -1;
   }
 
-  function toggleAttendee(dayId, playerId) {
+  function setAttendee(dayId, playerId, attending) {
     var day = state.days.find(function (d) { return d.id === dayId; });
     if (!day) return;
-    var current = effectiveAttendee(day, playerId);
+    if (effectiveAttendee(day, playerId) === attending) return;
     if (!state.dayOverrides[dayId]) state.dayOverrides[dayId] = {};
-    state.dayOverrides[dayId][playerId] = !current;
+    state.dayOverrides[dayId][playerId] = attending;
     saveDayOverrides();
     render();
+  }
+
+  function attendeesForDay(day) {
+    return state.players.filter(function (player) {
+      return effectiveAttendee(day, player.id);
+    });
+  }
+
+  function availablePlayers(day) {
+    var q = normalize(state.playerSearch.trim());
+    return state.players.filter(function (player) {
+      if (effectiveAttendee(day, player.id)) return false;
+      return q === "" || normalize(player.name).indexOf(q) !== -1;
+    });
+  }
+
+  function closePlayerSearch() {
+    state.playerSearchOpen = false;
+    state.playerSearchActiveIndex = -1;
+    renderPlayerSearchResults();
+  }
+
+  function addAttendee(playerId) {
+    if (!state.activeDayId) return;
+    setAttendee(state.activeDayId, playerId, true);
+    state.playerSearch = "";
+    els.playerSearchInput.value = "";
+    state.playerSearchActiveIndex = 0;
+    state.playerSearchOpen = true;
+    renderPlayerSearchResults();
+    els.playerSearchInput.focus();
   }
 
   function matchesForDay(day) {
@@ -378,10 +421,74 @@
       btn.textContent = day.name;
       btn.addEventListener("click", function () {
         state.activeDayId = day.id;
+        state.playerSearch = "";
+        els.playerSearchInput.value = "";
+        state.playerSearchOpen = false;
+        state.playerSearchActiveIndex = -1;
         render();
       });
       els.dayTabs.appendChild(btn);
     });
+  }
+
+  function renderPlayerSearchResults() {
+    var list = els.playerSearchResults;
+    var input = els.playerSearchInput;
+    if (!list || !input) return;
+
+    var activeDay = state.days.find(function (d) { return d.id === state.activeDayId; });
+    var open = state.playerSearchOpen && !!activeDay;
+    input.setAttribute("aria-expanded", open ? "true" : "false");
+    list.hidden = !open;
+    list.innerHTML = "";
+    if (!open) return;
+
+    var options = availablePlayers(activeDay);
+    if (options.length === 0) {
+      var empty = document.createElement("li");
+      empty.setAttribute("role", "presentation");
+      var msg = document.createElement("p");
+      msg.className = "player-search-empty";
+      msg.textContent = state.playerSearch.trim()
+        ? "No encontramos a nadie con ese nombre."
+        : "Todos los jugadores ya están confirmados.";
+      empty.appendChild(msg);
+      list.appendChild(empty);
+      return;
+    }
+
+    if (state.playerSearchActiveIndex >= options.length) {
+      state.playerSearchActiveIndex = options.length - 1;
+    }
+
+    options.forEach(function (player, i) {
+      var li = document.createElement("li");
+      li.setAttribute("role", "option");
+      li.id = "player-option-" + player.id;
+      var selected = i === state.playerSearchActiveIndex;
+      li.setAttribute("aria-selected", selected ? "true" : "false");
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "player-search-option";
+      if (selected) btn.setAttribute("aria-selected", "true");
+      btn.innerHTML =
+        '<span class="avatar" aria-hidden="true">' + player.initial + "</span>" +
+        "<span>" + player.name + "</span>";
+      btn.addEventListener("mousedown", function (e) {
+        e.preventDefault();
+      });
+      btn.addEventListener("click", function () {
+        addAttendee(player.id);
+      });
+      li.appendChild(btn);
+      list.appendChild(li);
+    });
+
+    var active = options[state.playerSearchActiveIndex];
+    input.setAttribute(
+      "aria-activedescendant",
+      active ? "player-option-" + active.id : ""
+    );
   }
 
   function renderDayPanel() {
@@ -393,25 +500,30 @@
       btn.setAttribute("aria-selected", state.days[i].id === state.activeDayId ? "true" : "false");
     });
 
+    els.dayPlaceName.textContent = activeDay.place || "Lugar por confirmar";
+
+    var attendees = attendeesForDay(activeDay);
     els.dayAttendeeChips.innerHTML = "";
-    state.players.forEach(function (player) {
-      var pressed = effectiveAttendee(activeDay, player.id);
+    attendees.forEach(function (player) {
       var btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "player-chip";
-      btn.setAttribute("aria-pressed", pressed ? "true" : "false");
+      btn.className = "player-chip attendee-chip";
       btn.setAttribute(
         "aria-label",
-        player.name + " asiste el " + activeDay.name
+        "Quitar a " + player.name + " de " + activeDay.name
       );
       btn.innerHTML =
         '<span class="avatar" aria-hidden="true">' + player.initial + "</span>" +
-        "<span>" + player.name + "</span>";
+        "<span>" + player.name + "</span>" +
+        '<span class="attendee-remove" aria-hidden="true">×</span>';
       btn.addEventListener("click", function () {
-        toggleAttendee(activeDay.id, player.id);
+        setAttendee(activeDay.id, player.id, false);
       });
       els.dayAttendeeChips.appendChild(btn);
     });
+    els.dayAttendeeEmpty.hidden = attendees.length > 0;
+
+    renderPlayerSearchResults();
 
     var match = matchesForDay(activeDay);
     els.dayMatchesList.innerHTML = "";
@@ -485,9 +597,79 @@
       els.searchInput.value = "";
       render();
     });
+
+    els.playerSearchInput.addEventListener("input", function (e) {
+      state.playerSearch = e.target.value;
+      state.playerSearchOpen = true;
+      state.playerSearchActiveIndex = 0;
+      renderPlayerSearchResults();
+    });
+
+    els.playerSearchInput.addEventListener("focus", function () {
+      state.playerSearchOpen = true;
+      if (state.playerSearchActiveIndex < 0) state.playerSearchActiveIndex = 0;
+      renderPlayerSearchResults();
+    });
+
+    els.playerSearchInput.addEventListener("keydown", function (e) {
+      var activeDay = state.days.find(function (d) { return d.id === state.activeDayId; });
+      if (!activeDay) return;
+      var options = availablePlayers(activeDay);
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        state.playerSearchOpen = true;
+        state.playerSearchActiveIndex = Math.min(
+          state.playerSearchActiveIndex + 1,
+          Math.max(options.length - 1, 0)
+        );
+        renderPlayerSearchResults();
+        return;
+      }
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        state.playerSearchActiveIndex = Math.max(state.playerSearchActiveIndex - 1, 0);
+        renderPlayerSearchResults();
+        return;
+      }
+      if (e.key === "Enter") {
+        var pick = options[state.playerSearchActiveIndex];
+        if (!pick && options.length === 1) pick = options[0];
+        if (pick) {
+          e.preventDefault();
+          addAttendee(pick.id);
+        }
+        return;
+      }
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closePlayerSearch();
+      }
+    });
+
+    document.addEventListener("mousedown", function (e) {
+      if (els.playerSearch && !els.playerSearch.contains(e.target)) {
+        closePlayerSearch();
+      }
+    });
+  }
+
+  function setView(view) {
+    var isGames = view === "games";
+    els.tabGames.setAttribute("aria-selected", isGames ? "true" : "false");
+    els.tabAttendance.setAttribute("aria-selected", isGames ? "false" : "true");
+    els.panelGames.hidden = !isGames;
+    els.panelAttendance.hidden = isGames;
   }
 
   function init() {
+    els.tabGames.addEventListener("click", function () {
+      setView("games");
+    });
+    els.tabAttendance.addEventListener("click", function () {
+      setView("attendance");
+    });
+
     fetch(DATA_URL)
       .then(function (res) {
         if (!res.ok) throw new Error("No se pudo cargar data/games.json");

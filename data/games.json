@@ -8,9 +8,9 @@
     { "id": "farah", "name": "Farah", "initial": "F" }
   ],
   "days": [
-    { "id": "thursday", "name": "Jueves", "attendees": [] },
-    { "id": "friday", "name": "Viernes", "attendees": ["alex", "bea", "chen"] },
-    { "id": "saturday", "name": "Sábado", "attendees": ["bea", "dana", "eli", "farah"] }
+    { "id": "thursday", "name": "Jueves", "place": "Casa de Alex", "attendees": [] },
+    { "id": "friday", "name": "Viernes", "place": "Casa de Bea", "attendees": ["alex", "bea", "chen"] },
+    { "id": "saturday", "name": "Sábado", "place": "Café de los Dados", "attendees": ["bea", "dana", "eli", "farah"] }
   ],
   "games": [
     {
