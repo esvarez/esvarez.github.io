@@ -1,0 +1,109 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Board game night API: Go Lambdas backed by a single DynamoDB table,
+  serving the interest/attendance data behind the static frontend.
+
+Globals:
+  Function:
+    Runtime: provided.al2023
+    Architectures: [arm64]
+    Timeout: 5
+    MemorySize: 128
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref BoardGameNightTable
+
+Resources:
+  BoardGameNightApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
+        # Tighten AllowOrigin to your GitHub Pages origin (e.g.
+        # 'https://<user>.github.io') before treating this as production;
+        # '*' is fine for personal/demo use but allows any site to call
+        # the write endpoints from a visitor's browser.
+
+  BoardGameNightTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+
+  GetDataFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: bootstrap
+      Description: Reads the full players/games/days snapshot (GET /data).
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref BoardGameNightTable
+      Events:
+        GetData:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BoardGameNightApi
+            Path: /data
+            Method: GET
+    Metadata:
+      BuildMethod: makefile
+
+  PutInterestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: bootstrap
+      Description: Sets one player's interest in one game (POST /interest).
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref BoardGameNightTable
+      Events:
+        PutInterest:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BoardGameNightApi
+            Path: /interest
+            Method: POST
+    Metadata:
+      BuildMethod: makefile
+
+  PutAttendanceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: bootstrap
+      Description: Sets one player's attendance on one day (POST /attendance).
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref BoardGameNightTable
+      Events:
+        PutAttendance:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BoardGameNightApi
+            Path: /attendance
+            Method: POST
+    Metadata:
+      BuildMethod: makefile
+
+Outputs:
+  ApiUrl:
+    Description: Base URL for the API
+    Value: !Sub "https://${BoardGameNightApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
+  TableName:
+    Description: DynamoDB table name (pass to cmd/seed as -table)
+    Value: !Ref BoardGameNightTable
