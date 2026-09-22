@@ -40,6 +40,7 @@
     dayAttendeeChips: document.getElementById("dayAttendeeChips"),
     dayAttendeeEmpty: document.getElementById("dayAttendeeEmpty"),
     dayMatchesList: document.getElementById("dayMatchesList"),
+    dayMatchesLabel: document.getElementById("dayMatchesLabel"),
     dayEmptyHint: document.getElementById("dayEmptyHint"),
     tabGames: document.getElementById("tabGames"),
     tabAttendance: document.getElementById("tabAttendance"),
@@ -178,21 +179,32 @@
     if (attendeeIds.length === 0) return { attendeeIds: attendeeIds, rows: [] };
     var attendeeCount = attendeeIds.length;
     var rows = state.games
-      .filter(function (game) {
-        return attendeeIds.every(function (pid) { return effectiveInterest(game, pid); });
-      })
       .map(function (game) {
-        var over = attendeeCount > game.max;
+        var interestedIds = attendeeIds.filter(function (pid) {
+          return effectiveInterest(game, pid);
+        });
+        var count = interestedIds.length;
+        var over = count > game.max;
         return {
           game: game,
-          interestedIds: attendeeIds,
-          count: attendeeCount,
+          interestedIds: interestedIds,
+          count: count,
+          allMatch: count === attendeeCount && count > 0,
           over: over,
-          overBy: over ? attendeeCount - game.max : 0
+          overBy: over ? count - game.max : 0
         };
       })
-      .sort(function (a, b) { return a.game.name.localeCompare(b.game.name, "es"); });
-    return { attendeeIds: attendeeIds, rows: rows };
+      .filter(function (row) { return row.count > 0; });
+    var fullMatches = rows.filter(function (row) { return row.allMatch; });
+    if (fullMatches.length > 0) {
+      fullMatches.sort(function (a, b) { return a.game.name.localeCompare(b.game.name, "es"); });
+      return { attendeeIds: attendeeIds, rows: fullMatches, showPeople: false };
+    }
+    rows.sort(function (a, b) {
+      if (a.count !== b.count) return b.count - a.count;
+      return a.game.name.localeCompare(b.game.name, "es");
+    });
+    return { attendeeIds: attendeeIds, rows: rows, showPeople: true };
   }
 
   function computeRow(game) {
@@ -529,6 +541,7 @@
     if (match.attendeeIds.length === 0) {
       els.dayMatchesList.hidden = true;
       els.dayEmptyHint.hidden = false;
+      els.dayMatchesLabel.textContent = "Juegos que coinciden";
       els.dayEmptyHint.textContent = "Añade jugadores a " + activeDay.name + " para ver qué juegos coinciden.";
       return;
     }
@@ -536,19 +549,37 @@
     if (match.rows.length === 0) {
       els.dayMatchesList.hidden = true;
       els.dayEmptyHint.hidden = false;
-      els.dayEmptyHint.textContent = "Ningún juego interesa a todos los asistentes de " + activeDay.name + " todavía.";
+      els.dayMatchesLabel.textContent = "Juegos de interés";
+      els.dayEmptyHint.textContent = "Ningún asistente de " + activeDay.name + " ha marcado interés en un juego todavía.";
       return;
     }
 
     els.dayMatchesList.hidden = false;
     els.dayEmptyHint.hidden = true;
+    els.dayMatchesLabel.textContent = match.showPeople ? "Juegos de interés" : "Juegos que coinciden";
     match.rows.forEach(function (row) {
       var li = document.createElement("li");
       li.className = "match-item" + (row.over ? " over-limit" : "");
-      li.innerHTML =
-        '<span class="match-name">' + escapeHtml(row.game.name) + "</span>" +
-        '<span class="match-range">' + row.game.min + "–" + row.game.max + " jugadores</span>" +
-        countBadgeHtml(row, true);
+      var html =
+        '<div class="match-top">' +
+          '<span class="match-name">' + escapeHtml(row.game.name) + "</span>" +
+          '<span class="match-range">' + row.game.min + "–" + row.game.max + " jugadores</span>" +
+          countBadgeHtml(row, true) +
+        "</div>";
+      if (match.showPeople) {
+        var interestedPlayers = state.players.filter(function (player) {
+          return row.interestedIds.indexOf(player.id) !== -1;
+        });
+        html += '<div class="chip-players match-players">' +
+          interestedPlayers.map(function (player) {
+            return '<span class="player-chip" aria-pressed="true">' +
+              '<span class="avatar" aria-hidden="true">' + player.initial + "</span>" +
+              "<span>" + escapeHtml(player.name) + "</span>" +
+              "</span>";
+          }).join("") +
+          "</div>";
+      }
+      li.innerHTML = html;
       els.dayMatchesList.appendChild(li);
     });
   }
