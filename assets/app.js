@@ -3,7 +3,6 @@
 
   var DATA_URL = "data/games.json";
   var OVERRIDES_KEY = "bgn-overrides-v1";
-  var ACCENT_KEY = "bgn-accent-v1";
   var DAY_OVERRIDES_KEY = "bgn-day-overrides-v1";
 
   var state = {
@@ -34,7 +33,6 @@
     emptyState: document.getElementById("emptyState"),
     clearFiltersBtn: document.getElementById("clearFiltersBtn"),
     overStatNumber: document.getElementById("overStatNumber"),
-    accentPicker: document.getElementById("accentPicker"),
     tableWrap: document.querySelector(".table-wrap"),
     dayTabs: document.getElementById("dayTabs"),
     dayAttendeeChips: document.getElementById("dayAttendeeChips"),
@@ -70,25 +68,6 @@
     try {
       localStorage.setItem(DAY_OVERRIDES_KEY, JSON.stringify(state.dayOverrides));
     } catch (e) { /* ignore quota / privacy-mode errors */ }
-  }
-
-  function loadAccent() {
-    try {
-      return localStorage.getItem(ACCENT_KEY);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  function saveAccent(color) {
-    try {
-      localStorage.setItem(ACCENT_KEY, color);
-    } catch (e) { /* ignore */ }
-  }
-
-  function applyAccent(color) {
-    document.documentElement.style.setProperty("--accent-color", color);
-    if (els.accentPicker) els.accentPicker.value = color;
   }
 
   function effectiveInterest(game, playerId) {
@@ -506,17 +485,9 @@
       els.searchInput.value = "";
       render();
     });
-
-    els.accentPicker.addEventListener("input", function (e) {
-      applyAccent(e.target.value);
-      saveAccent(e.target.value);
-    });
   }
 
   function init() {
-    var savedAccent = loadAccent();
-    if (savedAccent) applyAccent(savedAccent);
-
     fetch(DATA_URL)
       .then(function (res) {
         if (!res.ok) throw new Error("No se pudo cargar data/games.json");

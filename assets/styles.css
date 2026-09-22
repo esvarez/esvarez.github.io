@@ -138,35 +138,6 @@ input, select, button {
   font-weight: 500;
 }
 
-.tweak-panel {
-  margin-top: 16px;
-}
-
-.tweak-panel summary {
-  cursor: pointer;
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-  font-weight: 500;
-  width: fit-content;
-}
-
-.tweak-control {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-  font-size: 0.9rem;
-}
-
-.tweak-control input[type="color"] {
-  width: 40px;
-  height: 32px;
-  padding: 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: none;
-}
-
 /* ---------- Toolbar ---------- */
 .toolbar {
   padding: 14px 0;

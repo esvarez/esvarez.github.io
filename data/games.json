@@ -8,9 +8,9 @@
     { "id": "farah", "name": "Farah", "initial": "F" }
   ],
   "days": [
+    { "id": "thursday", "name": "Jueves", "attendees": [] },
     { "id": "friday", "name": "Viernes", "attendees": ["alex", "bea", "chen"] },
-    { "id": "saturday", "name": "Sábado", "attendees": ["bea", "dana", "eli", "farah"] },
-    { "id": "sunday", "name": "Domingo", "attendees": [] }
+    { "id": "saturday", "name": "Sábado", "attendees": ["bea", "dana", "eli", "farah"] }
   ],
   "games": [
     {
