@@ -1,16 +1,17 @@
 (function () {
   "use strict";
 
-  var DATA_URL = "data/games.json";
-  var OVERRIDES_KEY = "bgn-overrides-v1";
-  var DAY_OVERRIDES_KEY = "bgn-day-overrides-v1";
+  var DATA_URL = "https://d9c4rm7j1k.execute-api.us-east-1.amazonaws.com/prod/data";
+  var INTEREST_URL = "https://d9c4rm7j1k.execute-api.us-east-1.amazonaws.com/prod/interest";
+  var ATTENDANCE_URL = "https://d9c4rm7j1k.execute-api.us-east-1.amazonaws.com/prod/attendance";
+  var DAY_ORDER = ["thursday", "friday", "saturday"];
 
   var state = {
     players: [],
     games: [],
     days: [],
-    overrides: loadOverrides(),
-    dayOverrides: loadDayOverrides(),
+    pendingInterest: {},
+    pendingAttendance: {},
     activeDayId: null,
     search: "",
     filter: "all",
@@ -35,7 +36,6 @@
     mobileList: document.getElementById("mobileList"),
     emptyState: document.getElementById("emptyState"),
     clearFiltersBtn: document.getElementById("clearFiltersBtn"),
-    overStatNumber: document.getElementById("overStatNumber"),
     tableWrap: document.querySelector(".table-wrap"),
     dayTabs: document.getElementById("dayTabs"),
     dayPlaceName: document.getElementById("dayPlaceName"),
@@ -52,70 +52,97 @@
     panelAttendance: document.getElementById("panelAttendance")
   };
 
-  function loadOverrides() {
-    try {
-      var raw = localStorage.getItem(OVERRIDES_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch (e) {
-      return {};
-    }
-  }
-
-  function saveOverrides() {
-    try {
-      localStorage.setItem(OVERRIDES_KEY, JSON.stringify(state.overrides));
-    } catch (e) { /* ignore quota / privacy-mode errors */ }
-  }
-
-  function loadDayOverrides() {
-    try {
-      var raw = localStorage.getItem(DAY_OVERRIDES_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch (e) {
-      return {};
-    }
-  }
-
-  function saveDayOverrides() {
-    try {
-      localStorage.setItem(DAY_OVERRIDES_KEY, JSON.stringify(state.dayOverrides));
-    } catch (e) { /* ignore quota / privacy-mode errors */ }
-  }
-
   function effectiveInterest(game, playerId) {
-    var override = state.overrides[game.id];
-    if (override && Object.prototype.hasOwnProperty.call(override, playerId)) {
-      return override[playerId];
-    }
-    return !!game.interest[playerId];
+    return !!(game.interest && game.interest[playerId]);
   }
 
   function toggleInterest(gameId, playerId) {
     var game = state.games.find(function (g) { return g.id === gameId; });
     if (!game) return;
-    var current = effectiveInterest(game, playerId);
-    if (!state.overrides[gameId]) state.overrides[gameId] = {};
-    state.overrides[gameId][playerId] = !current;
-    saveOverrides();
+    var key = gameId + ":" + playerId;
+    if (state.pendingInterest[key]) return;
+    if (!game.interest) game.interest = {};
+    var next = !effectiveInterest(game, playerId);
+    game.interest[playerId] = next;
+    state.pendingInterest[key] = true;
     render();
+
+    fetch(INTEREST_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        gameId: gameId,
+        playerId: playerId,
+        interested: next
+      })
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("No se pudo guardar el interés");
+      })
+      .catch(function (err) {
+        game.interest[playerId] = !next;
+        render();
+        console.error(err);
+      })
+      .then(function () {
+        delete state.pendingInterest[key];
+      });
   }
 
   function effectiveAttendee(day, playerId) {
-    var override = state.dayOverrides[day.id];
-    if (override && Object.prototype.hasOwnProperty.call(override, playerId)) {
-      return override[playerId];
-    }
-    return day.attendees.indexOf(playerId) !== -1;
+    return !!(day.attendees && day.attendees.indexOf(playerId) !== -1);
   }
 
   function setAttendee(dayId, playerId, attending) {
     var day = state.days.find(function (d) { return d.id === dayId; });
     if (!day) return;
+    var key = dayId + ":" + playerId;
+    if (state.pendingAttendance[key]) return;
     if (effectiveAttendee(day, playerId) === attending) return;
-    if (!state.dayOverrides[dayId]) state.dayOverrides[dayId] = {};
-    state.dayOverrides[dayId][playerId] = attending;
-    saveDayOverrides();
+    if (!day.attendees) day.attendees = [];
+    if (attending) {
+      day.attendees.push(playerId);
+    } else {
+      day.attendees = day.attendees.filter(function (id) { return id !== playerId; });
+    }
+    state.pendingAttendance[key] = true;
     render();
+
+    fetch(ATTENDANCE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        dayId: dayId,
+        playerId: playerId,
+        attending: attending
+      })
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("No se pudo guardar la asistencia");
+      })
+      .catch(function (err) {
+        if (attending) {
+          day.attendees = day.attendees.filter(function (id) { return id !== playerId; });
+        } else if (day.attendees.indexOf(playerId) === -1) {
+          day.attendees.push(playerId);
+        }
+        render();
+        console.error(err);
+      })
+      .then(function () {
+        delete state.pendingAttendance[key];
+      });
+  }
+
+  function sortDays(days) {
+    return days.slice().sort(function (a, b) {
+      var ai = DAY_ORDER.indexOf(a.id);
+      var bi = DAY_ORDER.indexOf(b.id);
+      if (ai === -1 && bi === -1) return a.id.localeCompare(b.id);
+      if (ai === -1) return 1;
+      if (bi === -1) return -1;
+      return ai - bi;
+    });
   }
 
   function attendeesForDay(day) {
@@ -358,12 +385,6 @@
   }
 
   function render() {
-    var allRows = state.games.map(computeRow);
-    var overCount = allRows.filter(function (r) { return r.over; }).length;
-    var withinCount = allRows.length - overCount;
-
-    els.overStatNumber.textContent = String(overCount);
-
     var searchMatched = getSearchMatched();
     els.countAll.textContent = String(searchMatched.length);
     els.countOver.textContent = String(searchMatched.filter(function (r) { return r.over; }).length);
@@ -672,13 +693,13 @@
 
     fetch(DATA_URL)
       .then(function (res) {
-        if (!res.ok) throw new Error("No se pudo cargar data/games.json");
+        if (!res.ok) throw new Error("No se pudo cargar los datos");
         return res.json();
       })
       .then(function (data) {
-        state.players = data.players;
-        state.games = data.games;
-        state.days = data.days || [];
+        state.players = data.players || [];
+        state.games = data.games || [];
+        state.days = sortDays(data.days || []);
         state.activeDayId = state.days.length ? state.days[0].id : null;
         buildPlayerHeaders();
         buildDayTabs();
